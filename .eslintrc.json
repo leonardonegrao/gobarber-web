@@ -27,6 +27,7 @@
     ],
     "rules": {
       "react/prop-types": "off",
+      "no-unused-vars": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "space-before-function-paren": "off",
       "no-use-before-define": "off",
