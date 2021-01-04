@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { shade } from 'polished'
 
 import signInBackgroundImg from '../../assets/sign-in-background.png'
@@ -9,11 +9,24 @@ export const Container = styled.div`
   align-items: stretch;
 `
 
+const appearFromLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-50px)
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0)
+  }
+`
+
 export const Content = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  animation: ${appearFromLeft} 1s;
 
   width: 100%;
   max-width: 700px;

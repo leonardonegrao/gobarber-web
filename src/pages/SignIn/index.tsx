@@ -1,9 +1,11 @@
 import React, { useCallback, useRef } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi'
 import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { useAuth } from '../../hooks/AuthContext'
+import { useToast } from '../../hooks/ToastContext'
 import getValidationErrors from '../../utils/getValidationErrors'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
@@ -18,11 +20,10 @@ interface SignInFormData {
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const history = useHistory()
 
   const auth = useAuth()
-  const user = auth.user
-
-  console.log(user)
+  const toast = useToast()
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -40,19 +41,28 @@ const SignIn: React.FC = () => {
           abortEarly: false
         })
 
-        auth.signIn({
+        await auth.signIn({
           email: data.email,
           password: data.password
         })
+
+        history.push('/dashboard')
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err)
 
           formRef.current?.setErrors(errors)
         }
+
+        toast.addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description:
+            'Ocorreu um erro ao tentar seu login. Cheque suas credenciais.'
+        })
       }
     },
-    [auth]
+    [auth, toast, history]
   )
 
   return (
@@ -76,10 +86,10 @@ const SignIn: React.FC = () => {
           <a href="/forgot">Esqueci minha senha</a>
         </Form>
 
-        <a href="">
+        <Link to="/signup">
           <FiLogIn />
           Criar conta
-        </a>
+        </Link>
       </Content>
       <Background />
     </Container>
